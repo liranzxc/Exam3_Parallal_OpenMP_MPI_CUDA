@@ -8,7 +8,7 @@
 cudaError_t CounterCuda(int * ArrNumbers, int n, int myid, int * results);
 void FreeMethod(int * arr, int * result);
 
-
+// F_gpu function execute in gpu  - Heavy function calcaute
 __device__ double f_gpu(int i) {
 	int j;
 	double value;
@@ -21,6 +21,7 @@ __device__ double f_gpu(int i) {
 	return cos(result);
 }
 
+// CounterKernel each thread go to only one value in array ,and set in results array
 __global__ void CounterKernel(int *Arr_dev,  int * results_dev)
 {
 	int i = blockIdx.x * 1024 +  threadIdx.x;
@@ -40,8 +41,7 @@ __global__ void CounterKernel(int *Arr_dev,  int * results_dev)
 
 
 
-// Helper function for using CUDA to add vectors in parallel.
-
+// Helper function for using CUDA to Counter  in parallel.
 cudaError_t CounterCuda(int * ArrNumbers, int n, int myid, int * results)
 {
 	int *dev_ArrNumbers = 0;
@@ -140,7 +140,7 @@ cudaError_t CounterCuda(int * ArrNumbers, int n, int myid, int * results)
 
 }
 
-
+// free Cuda space in gpu 
 void FreeMethod(int * arr, int * result)
 {
 	cudaFree(arr);

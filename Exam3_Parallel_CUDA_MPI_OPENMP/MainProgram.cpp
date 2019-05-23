@@ -32,27 +32,18 @@ int main(int argc, char *argv[]) {
 	if (myid == 0) // master
 	{
 		char * file_name = "D://data.txt";
-		if ( n = ReadFromFile(file_name, &ArrNumbers))
+		if ( n = ReadFromFile(file_name, &ArrNumbers)) // reading from file
 		{
-
-			//Sending half array  to process 1 
+			// sending N number to p1 
+			//Sending half array  to  p1 
 			MPI_Send(&n, 1, MPI_INT, 1, 0, MPI_COMM_WORLD);
-
 			MPI_Send(ArrNumbers, n/2 , MPI_INT, 1, 0, MPI_COMM_WORLD);
-
-
-			// process 1 contains the first half of array
-
-			// process 0 second half array 
-
-
 		}
 
 	}
-	else
+	else if (myid == 1)
 	{
-		if (myid == 1)
-		{
+		
 			MPI_Recv(&n, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, &status);
 
 			ArrNumbers = (int*)malloc(sizeof(int) * n / 2 );
@@ -60,19 +51,25 @@ int main(int argc, char *argv[]) {
 			MPI_Recv(ArrNumbers, n/2, MPI_INT, 0, 0, MPI_COMM_WORLD, &status);
 
 			//  p1 first half array 
-		}
+		
 	}
 	
+
+	//status 
+	// p1 works on first half of array
+	// p0 works on second half of array
 	double s_time = MPI_Wtime();
 
-	int  * results = (int*)malloc(sizeof(int) * n / 2); // create results 
+	int  * results = (int*)malloc(sizeof(int) * n / 2); // create results array n/2 results
 
+	// each process execute a GPU CUDA function CounterCuda
 	cudaError_t cudaStatus = CounterCuda(ArrNumbers, n, myid,results);
 	if (cudaStatus != cudaSuccess) {
 		fprintf(stderr, "CounterCuda failed!");
 		return 1;
 	}
 
+	// each process counter the array result parallel by openMP
 	int sum = 0;
 	#pragma omp parallel for shared(results) reduction(+: sum)
 	for (auto i = 0; i < n / 2 ; i++)
@@ -86,6 +83,7 @@ int main(int argc, char *argv[]) {
 
 	if (myid == 0)
 	{
+		// master collect result from p1 
 		int sumP1 = 0;
 		MPI_Recv(&sumP1, 1, MPI_INT, 1, 0, MPI_COMM_WORLD, &status);
 
@@ -94,16 +92,17 @@ int main(int argc, char *argv[]) {
 		printf("Results :  %d \n", sum+sumP1);
 		printf("Time is  :  %f \n", end_time-s_time);
 
-		s_time = MPI_Wtime();
-		WorkNormally(n, ArrNumbers);
-		end_time = MPI_Wtime();
-
-		printf("Time seq is  :  %f \n", end_time - s_time);
+		//// Seq soultion for testing
+		//s_time = MPI_Wtime();
+		//WorkNormally(n, ArrNumbers);
+		//end_time = MPI_Wtime();
+		//printf("Time seq is  :  %f \n", end_time - s_time);
 
 
 	}
 	else if (myid == 1)
 	{
+		// p1 send result to p0 
 		MPI_Send(&sum, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
 
 	}
@@ -111,6 +110,7 @@ int main(int argc, char *argv[]) {
 
 	MPI_Finalize();
 
+	// free arrays
 	free(ArrNumbers);
 	free(results);
 
