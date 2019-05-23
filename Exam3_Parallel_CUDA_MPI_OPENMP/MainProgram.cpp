@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
 
 	if (myid == 0) // master
 	{
-		char * file_name = "D://data.txt";
+		char * file_name = argv[1];
 		if ( n = ReadFromFile(file_name, &ArrNumbers)) // reading from file
 		{
 			// sending N number to p1 
