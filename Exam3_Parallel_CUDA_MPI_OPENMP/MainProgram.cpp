@@ -1,20 +1,6 @@
 #include "MainProgram.h"
-#include "cuda_runtime.h"
-#include "device_launch_parameters.h"
-#include <math.h>
-#include <stdio.h>
-#include "mpi.h"
-#include <omp.h>
-#include <stdlib.h>
-#define HEAVY 10000
 
 
-cudaError_t CounterCuda(int * ArrNumbers,int n, int myid,int * results);
-
-
-int ReadFromFile(char * file_name, int ** ArrNumbers);
-void WorkNormally(int n , int * ArrNumbers);
-double f(int i);
 
 int main(int argc, char *argv[]) {
 
@@ -28,27 +14,34 @@ int main(int argc, char *argv[]) {
 	int n;
 	int * ArrNumbers = NULL;
 
+	if (numprocs != 2)
+	{
+		printf("Program must be two processes ,please set to 2 ");
+		MPI_Finalize();
+		return 0;
+	}
 
-	if (myid == 0) // master
+
+	if (myid == MASTER) // master
 	{
 		char * file_name = argv[1];
 		if ( n = ReadFromFile(file_name, &ArrNumbers)) // reading from file
 		{
 			// sending N number to p1 
 			//Sending half array  to  p1 
-			MPI_Send(&n, 1, MPI_INT, 1, 0, MPI_COMM_WORLD);
-			MPI_Send(ArrNumbers, n/2 , MPI_INT, 1, 0, MPI_COMM_WORLD);
+			MPI_Send(&n, 1, MPI_INT, SLAVE, 0, MPI_COMM_WORLD);
+			MPI_Send(ArrNumbers, n/2 , MPI_INT, SLAVE, 0, MPI_COMM_WORLD);
 		}
 
 	}
 	else if (myid == 1)
 	{
 		
-			MPI_Recv(&n, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, &status);
+			MPI_Recv(&n, 1, MPI_INT, MASTER, 0, MPI_COMM_WORLD, &status);
 
 			ArrNumbers = (int*)malloc(sizeof(int) * n / 2 );
 
-			MPI_Recv(ArrNumbers, n/2, MPI_INT, 0, 0, MPI_COMM_WORLD, &status);
+			MPI_Recv(ArrNumbers, n/2, MPI_INT, MASTER, 0, MPI_COMM_WORLD, &status);
 
 			//  p1 first half array 
 		
@@ -81,15 +74,15 @@ int main(int argc, char *argv[]) {
 
 	// p1 send to p0 results 
 
-	if (myid == 0)
+	if (myid == MASTER)
 	{
 		// master collect result from p1 
 		int sumP1 = 0;
-		MPI_Recv(&sumP1, 1, MPI_INT, 1, 0, MPI_COMM_WORLD, &status);
+		MPI_Recv(&sumP1, 1, MPI_INT, SLAVE, 0, MPI_COMM_WORLD, &status);
 
 		double end_time = MPI_Wtime();
 
-		printf("Results :  %d \n", sum+sumP1);
+		printf("Number of positive in arr by f function  :  %d \n", sum+sumP1);
 		printf("Time is  :  %f \n", end_time-s_time);
 
 		//// Seq soultion for testing
@@ -100,10 +93,10 @@ int main(int argc, char *argv[]) {
 
 
 	}
-	else if (myid == 1)
+	else if (myid == SLAVE)
 	{
 		// p1 send result to p0 
-		MPI_Send(&sum, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
+		MPI_Send(&sum, 1, MPI_INT, MASTER, 0, MPI_COMM_WORLD);
 
 	}
 	

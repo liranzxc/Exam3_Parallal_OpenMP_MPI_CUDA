@@ -1,4 +1,5 @@
-﻿  
+﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppClean.targets(76,5): warning : The process cannot access the file 'c:\users\liran\documents\exam3_parallel_cuda_mpi_openmp\x64\debug\exam3_parallel_cuda_mpi_openmp.ilk' because it is being used by another process.
+  
   C:\Users\liran\Documents\Exam3_Parallel_CUDA_MPI_OPENMP\Exam3_Parallel_CUDA_MPI_OPENMP>"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v9.2\bin\nvcc.exe" -ccbin "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64" -x cu  -I"C:\Program Files\MPICH2\include" -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v9.2\include" -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v9.2\include"  -G   --keep-dir x64\Debug -maxrregcount=0  --machine 64 --compile   -g   -DWIN32 -DWIN64 -D_DEBUG -D_CONSOLE -D_MBCS -Xcompiler "/EHsc /W3 /nologo /Od  /FS /Zi /RTC1 /MDd " -o x64\Debug\kernel.cu.obj "C:\Users\liran\Documents\Exam3_Parallel_CUDA_MPI_OPENMP\Exam3_Parallel_CUDA_MPI_OPENMP\kernel.cu" -clean 
   kernel.cu
   Compiling CUDA source file kernel.cu...
@@ -6,12 +7,13 @@
   C:\Users\liran\Documents\Exam3_Parallel_CUDA_MPI_OPENMP\Exam3_Parallel_CUDA_MPI_OPENMP>"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v9.2\bin\nvcc.exe" -gencode=arch=compute_30,code=\"sm_30,compute_30\" --use-local-env -ccbin "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64" -x cu  -I"C:\Program Files\MPICH2\include" -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v9.2\include" -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v9.2\include"  -G   --keep-dir x64\Debug -maxrregcount=0  --machine 64 --compile -cudart static  -g   -DWIN32 -DWIN64 -D_DEBUG -D_CONSOLE -D_MBCS -Xcompiler "/EHsc /W3 /nologo /Od /Fdx64\Debug\vc140.pdb /FS /Zi /RTC1 /MDd " -o x64\Debug\kernel.cu.obj "C:\Users\liran\Documents\Exam3_Parallel_CUDA_MPI_OPENMP\Exam3_Parallel_CUDA_MPI_OPENMP\kernel.cu" 
   kernel.cu
   MainProgram.cpp
-c:\users\liran\documents\exam3_parallel_cuda_mpi_openmp\exam3_parallel_cuda_mpi_openmp\mainprogram.cpp(151): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+c:\users\liran\documents\exam3_parallel_cuda_mpi_openmp\exam3_parallel_cuda_mpi_openmp\mainprogram.cpp(144): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(205): note: see declaration of 'fopen'
-c:\users\liran\documents\exam3_parallel_cuda_mpi_openmp\exam3_parallel_cuda_mpi_openmp\mainprogram.cpp(154): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+c:\users\liran\documents\exam3_parallel_cuda_mpi_openmp\exam3_parallel_cuda_mpi_openmp\mainprogram.cpp(147): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(1193): note: see declaration of 'fscanf'
-c:\users\liran\documents\exam3_parallel_cuda_mpi_openmp\exam3_parallel_cuda_mpi_openmp\mainprogram.cpp(168): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+c:\users\liran\documents\exam3_parallel_cuda_mpi_openmp\exam3_parallel_cuda_mpi_openmp\mainprogram.cpp(161): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(1193): note: see declaration of 'fscanf'
+  LINK : C:\Users\liran\Documents\Exam3_Parallel_CUDA_MPI_OPENMP\x64\Debug\Exam3_Parallel_CUDA_MPI_OPENMP.exe not found or not built by the last incremental link; performing full link
      Creating library C:\Users\liran\Documents\Exam3_Parallel_CUDA_MPI_OPENMP\x64\Debug\Exam3_Parallel_CUDA_MPI_OPENMP.lib and object C:\Users\liran\Documents\Exam3_Parallel_CUDA_MPI_OPENMP\x64\Debug\Exam3_Parallel_CUDA_MPI_OPENMP.exp
   Exam3_Parallel_CUDA_MPI_OPENMP.vcxproj -> C:\Users\liran\Documents\Exam3_Parallel_CUDA_MPI_OPENMP\x64\Debug\Exam3_Parallel_CUDA_MPI_OPENMP.exe
   Exam3_Parallel_CUDA_MPI_OPENMP.vcxproj -> C:\Users\liran\Documents\Exam3_Parallel_CUDA_MPI_OPENMP\x64\Debug\Exam3_Parallel_CUDA_MPI_OPENMP.pdb (Full PDB)
