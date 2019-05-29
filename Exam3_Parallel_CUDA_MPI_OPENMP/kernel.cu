@@ -3,7 +3,7 @@
 #include "device_launch_parameters.h"
 #include <math.h>
 #include <stdio.h>
-#define HEAVY 10000
+#include "MainProgram.h"
 
 cudaError_t CounterCuda(int * ArrNumbers, int n, int myid, int * results);
 void FreeMethod(int * arr, int * result);
@@ -59,14 +59,14 @@ cudaError_t CounterCuda(int * ArrNumbers, int n, int myid, int * results)
 
 
 	// Allocate GPU buffers for three vectors (two input, one output)    .
-	cudaStatus = cudaMalloc((void**)&dev_ArrNumbers, (n/2) * sizeof(int));
+	cudaStatus = cudaMalloc((void**)&dev_ArrNumbers, (n/4) * sizeof(int));
 	if (cudaStatus != cudaSuccess) {
 		fprintf(stderr, "cudaMalloc failed!");
 		FreeMethod(dev_ArrNumbers, dev_results);
 		return cudaStatus;
 	}
 
-	cudaStatus = cudaMalloc((void**)&dev_results, (n/2) * sizeof(int));
+	cudaStatus = cudaMalloc((void**)&dev_results, (n/4) * sizeof(int));
 	if (cudaStatus != cudaSuccess) {
 		fprintf(stderr, "cudaMalloc failed!");
 		FreeMethod(dev_ArrNumbers, dev_results);
@@ -78,9 +78,9 @@ cudaError_t CounterCuda(int * ArrNumbers, int n, int myid, int * results)
 
 	// process 0 second half array 
 
-	if (myid == 0)
-	{											// second half
-		cudaStatus = cudaMemcpy(dev_ArrNumbers, ArrNumbers + (n/2), (n / 2) * sizeof(int), cudaMemcpyHostToDevice);
+	if (myid == MASTER)
+	{											// first quarter 
+		cudaStatus = cudaMemcpy(dev_ArrNumbers, ArrNumbers  + (n/2) , (n / 4) * sizeof(int), cudaMemcpyHostToDevice);
 		if (cudaStatus != cudaSuccess) {
 			fprintf(stderr, "cudaMemcpy failed!");
 			FreeMethod(dev_ArrNumbers, dev_results);
@@ -89,9 +89,9 @@ cudaError_t CounterCuda(int * ArrNumbers, int n, int myid, int * results)
 	}
 	else
 	{
-		if (myid == 1)
-		{											// first half
-			cudaStatus = cudaMemcpy(dev_ArrNumbers, ArrNumbers, (n / 2) * sizeof(int), cudaMemcpyHostToDevice);
+		if (myid == SLAVE)
+		{											// first quater
+			cudaStatus = cudaMemcpy(dev_ArrNumbers, ArrNumbers, (n / 4) * sizeof(int), cudaMemcpyHostToDevice);
 			if (cudaStatus != cudaSuccess) {
 				fprintf(stderr, "cudaMemcpy failed!");
 				FreeMethod(dev_ArrNumbers, dev_results);
@@ -100,8 +100,9 @@ cudaError_t CounterCuda(int * ArrNumbers, int n, int myid, int * results)
 		}
 	}
 
-	int dim_blocks = ((n/2) / 1024) + 1; // 49
+	int dim_blocks = ((n/4) / 1024) + 1; // 25
 
+	//calling cuda gpu function
 	CounterKernel <<< dim_blocks , 1024 >>>(dev_ArrNumbers,dev_results);
 
 	// Copy input vectors from host memory to GPU buffers.
@@ -124,7 +125,7 @@ cudaError_t CounterCuda(int * ArrNumbers, int n, int myid, int * results)
 	}
 
 	// Copy output vector from GPU buffer to host memory.
-	cudaStatus = cudaMemcpy(results, dev_results, (n/2) * sizeof(int), cudaMemcpyDeviceToHost);
+	cudaStatus = cudaMemcpy(results, dev_results, (n/4) * sizeof(int), cudaMemcpyDeviceToHost);
 	if (cudaStatus != cudaSuccess) {
 		fprintf(stderr, "cudaMemcpy failed!");
 		FreeMethod(dev_ArrNumbers, dev_results);

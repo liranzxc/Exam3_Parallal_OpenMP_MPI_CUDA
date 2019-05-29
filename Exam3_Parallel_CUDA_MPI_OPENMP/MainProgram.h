@@ -12,6 +12,7 @@
 
 cudaError_t CounterCuda(int * ArrNumbers, int n, int myid, int * results);
 
+void OpenMPCounter(int myid, int n,int * ArrNumbers, int * results_OpenMP_quarter);
 
 int ReadFromFile(char * file_name, int ** ArrNumbers);
 void WorkNormally(int n, int * ArrNumbers);
